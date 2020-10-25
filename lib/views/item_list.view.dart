@@ -40,7 +40,8 @@ class _ItemListViewState extends State<ItemListView> {
       theme: _themeData,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Lista de Compras'),
+          backgroundColor: Color.fromRGBO(255, 128, 0, 10),
+          title: Text('O que que tem que comprar?'),
           centerTitle: true,
           actions: [_popupMenuButton()],
         ),
