@@ -8,6 +8,15 @@ class ItemListView extends StatefulWidget {
   _ItemListViewState createState() => _ItemListViewState();
 }
 
+ThemeData _lightTheme = ThemeData(
+    //brightness: Brightness.light,
+    primaryColor: Colors.purple[900],
+    primarySwatch: Colors.purple);
+ThemeData _darkTheme = ThemeData(brightness: Brightness.dark);
+
+ThemeData _themeData = _lightTheme;
+ThemeData get themeData => _themeData;
+
 class _ItemListViewState extends State<ItemListView> {
   final _formKey = GlobalKey<FormState>();
   var _itemController = TextEditingController();
@@ -34,7 +43,11 @@ class _ItemListViewState extends State<ItemListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lista de Compras'), centerTitle: true),
+      appBar: AppBar(
+        title: Text('Lista de Compras'),
+        centerTitle: true,
+        actions: [_popupMenuButton()],
+      ),
       body: Scrollbar(
         child: ListView(
           children: [
@@ -150,7 +163,7 @@ class _ItemListViewState extends State<ItemListView> {
     });
   }
 
-  _PopupMenuButton() {
+  _popupMenuButton() {
     return PopupMenuButton(
       onSelected: (value) => _setTheme(value),
       itemBuilder: (context) {
