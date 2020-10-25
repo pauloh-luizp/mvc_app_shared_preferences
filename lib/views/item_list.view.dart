@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mvc_app_shared_preferences/controllers/item.controller.dart';
 import 'package:mvc_app_shared_preferences/models/item.model.dart';
 
@@ -20,11 +21,6 @@ class _ItemListViewState extends State<ItemListView> {
   void initState() {
     super.initState();
     _loadTheme();
-  }
-
-  @override
-  void initState() {
-    super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.getAll().then((data) {
@@ -133,5 +129,56 @@ class _ItemListViewState extends State<ItemListView> {
             ],
           );
         });
+  }
+
+  // Carregando o tema salvo pelo usuário
+  _loadTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _theme = (prefs.getString('theme') ?? 'Light');
+      _themeData = _theme == 'Dark' ? ThemeData.dark() : ThemeData.light();
+    });
+  }
+
+// Carregando o tema salvo pelo usuário
+  _setTheme(theme) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _theme = theme;
+      _themeData = theme == 'Dark' ? ThemeData.dark() : ThemeData.light();
+      prefs.setString('theme', theme);
+    });
+  }
+
+  _PopupMenuButton() {
+    return PopupMenuButton(
+      onSelected: (value) => _setTheme(value),
+      itemBuilder: (context) {
+        var list = List<PopupMenuEntry<Object>>();
+        list.add(
+          PopupMenuItem(child: Text("Configurar Tema")),
+        );
+        list.add(
+          PopupMenuDivider(
+            height: 10,
+          ),
+        );
+        list.add(
+          CheckedPopupMenuItem(
+            child: Text("Light"),
+            value: 'Light',
+            checked: _theme == 'Light',
+          ),
+        );
+        list.add(
+          CheckedPopupMenuItem(
+            child: Text("Dark"),
+            value: 'Dark',
+            checked: _theme == 'Dark',
+          ),
+        );
+        return list;
+      },
+    );
   }
 }

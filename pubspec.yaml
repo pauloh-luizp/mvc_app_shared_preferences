@@ -27,6 +27,7 @@ dependencies:
   provider: ^4.3.2+2
   mobx: ^1.2.0
   flutter_mobx: ^1.1.0
+  shared_preferences: ^0.5.12+2
 
 
 
