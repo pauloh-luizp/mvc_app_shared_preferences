@@ -88,6 +88,7 @@ class _ItemListViewState extends State<ItemListView> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
+          backgroundColor: Color.fromRGBO(255, 128, 0, 10),
           onPressed: () => _displayDialog(context),
         ),
       ),
