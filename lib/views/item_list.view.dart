@@ -8,16 +8,8 @@ class ItemListView extends StatefulWidget {
   _ItemListViewState createState() => _ItemListViewState();
 }
 
-ThemeData _lightTheme = ThemeData(
-    //brightness: Brightness.light,
-    primaryColor: Colors.purple[900],
-    primarySwatch: Colors.purple);
-ThemeData _darkTheme = ThemeData(brightness: Brightness.dark);
-
-ThemeData _themeData = _lightTheme;
-ThemeData get themeData => _themeData;
-
 class _ItemListViewState extends State<ItemListView> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
   final _formKey = GlobalKey<FormState>();
   var _itemController = TextEditingController();
   var _list = List<Item>();
@@ -42,56 +34,61 @@ class _ItemListViewState extends State<ItemListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lista de Compras'),
-        centerTitle: true,
-        actions: [_popupMenuButton()],
-      ),
-      body: Scrollbar(
-        child: ListView(
-          children: [
-            for (int i = 0; i < _list.length; i++)
-              ListTile(
-                  title: CheckboxListTile(
-                controlAffinity: ListTileControlAffinity.leading,
-                title: _list[i].concluido
-                    ? Text(
-                        _list[i].nome,
-                        style:
-                            TextStyle(decoration: TextDecoration.lineThrough),
-                      )
-                    : Text(_list[i].nome),
-                value: _list[i].concluido,
-                secondary: IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    size: 20.0,
-                    color: Colors.red[900],
+    return MaterialApp(
+      navigatorKey: _navigatorKey,
+      debugShowCheckedModeBanner: false,
+      theme: _themeData,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Lista de Compras'),
+          centerTitle: true,
+          actions: [_popupMenuButton()],
+        ),
+        body: Scrollbar(
+          child: ListView(
+            children: [
+              for (int i = 0; i < _list.length; i++)
+                ListTile(
+                    title: CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: _list[i].concluido
+                      ? Text(
+                          _list[i].nome,
+                          style:
+                              TextStyle(decoration: TextDecoration.lineThrough),
+                        )
+                      : Text(_list[i].nome),
+                  value: _list[i].concluido,
+                  secondary: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      size: 20.0,
+                      color: Colors.red[900],
+                    ),
+                    onPressed: () {
+                      _controller.delete(i).then((data) {
+                        setState(() {
+                          _list = _controller.list;
+                        });
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    _controller.delete(i).then((data) {
+                  onChanged: (c) {
+                    _list[i].concluido = c;
+                    _controller.updateList(_list).then((data) {
                       setState(() {
                         _list = _controller.list;
                       });
                     });
                   },
-                ),
-                onChanged: (c) {
-                  _list[i].concluido = c;
-                  _controller.updateList(_list).then((data) {
-                    setState(() {
-                      _list = _controller.list;
-                    });
-                  });
-                },
-              )),
-          ],
+                )),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _displayDialog(context),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => _displayDialog(context),
+        ),
       ),
     );
   }
